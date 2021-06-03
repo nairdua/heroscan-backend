@@ -11,12 +11,17 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 8 * 1024 * 1024 # 8 MB
 
+TF_MODEL_PATH = 'saved_model/my_model/'
+SK_MODEL_PATH = 'modelheroscan.pkl'
+LABEL_PATH = 'labelheroscan.pkl'
+
+predictor = Predictor(TF_MODEL_PATH, SK_MODEL_PATH, LABEL_PATH)
+
 def allowed_file(filename):
     return '.' in filename and filename.split('.')[-1].lower() in ALLOWED_EXTENSIONS 
 
 @app.route('/api/predict/', methods=['POST'])
 def predict():
-    predictor = Predictor()
     '''Predicts which hero is in the uploaded image.'''
     if request.method == 'POST':
         # Verify file is in POST request

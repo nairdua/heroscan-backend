@@ -2,15 +2,15 @@ import pickle
 from PIL import Image
 from mtcnn.mtcnn import MTCNN
 from numpy import asarray, expand_dims
-# from matplotlib import pyplot
 import tensorflow as tf
 from tensorflow import keras
 
-SK_MODEL_PATH = 'modelheroscan.pkl'
-TF_MODEL_PATH = 'saved_model/my_model/'
-LABEL_PATH = 'labelheroscan.pkl'
-
 class Predictor:
+    def __init__(self, tf_model, sk_model, label):
+        self.tf_model = tf.keras.models.load_model(tf_model)
+        self.sk_model = pickle.load(open(sk_model, 'rb'))
+        self.label = pickle.load(open(label, 'rb'))
+
     def extract_face(self, filename, required_size=(160, 160)):
         '''Extract a single face from input file'''
         image = Image.open(filename)
@@ -37,32 +37,28 @@ class Predictor:
         face_array = asarray(image)
         return face_array
 
-    def get_embedding(self, model, face_pixels):
+    def get_embedding(self, face_pixels):
         '''Get embed for face'''
         face_pixels = face_pixels.astype('float32')
         mean, std = face_pixels.mean(), face_pixels.std()
         face_pixels = (face_pixels - mean) / std
         samples = expand_dims(face_pixels, axis=0)
-        yhat = model.predict(samples)
+        yhat = self.tf_model.predict(samples)
         return yhat[0]
 
     def predict(self, image):
         '''get prediction from input image'''
         image = self.extract_face(image)
-        tf_model = tf.keras.models.load_model(TF_MODEL_PATH)
-
+        
         # put image into tensorflow model
-        face_emb = self.get_embedding(tf_model, image)
+        face_emb = self.get_embedding(image)
         samples = expand_dims(face_emb, axis=0)
 
-        sk_model = pickle.load(open(SK_MODEL_PATH, 'rb'))
-        label = pickle.load(open(LABEL_PATH, 'rb'))
-
         # pipe TF result to SK model
-        yhat_class = sk_model.predict(samples)
+        yhat_class = self.sk_model.predict(samples)
 
         # results
         # class_index = yhat_class[0]
-        predict_names = label.inverse_transform(yhat_class)
+        predict_names = self.label.inverse_transform(yhat_class)
         result = predict_names[0]
         return result
