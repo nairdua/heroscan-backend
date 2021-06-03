@@ -2,7 +2,7 @@ import pickle
 from PIL import Image
 from mtcnn.mtcnn import MTCNN
 from numpy import asarray, expand_dims
-from matplotlib import pyplot
+# from matplotlib import pyplot
 import tensorflow as tf
 from tensorflow import keras
 
@@ -62,7 +62,7 @@ class Predictor:
         yhat_class = sk_model.predict(samples)
 
         # results
-        class_index = yhat_class[0]
+        # class_index = yhat_class[0]
         predict_names = label.inverse_transform(yhat_class)
         result = predict_names[0]
         return result

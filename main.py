@@ -1,10 +1,6 @@
-import os
-import urllib.request
 import tempfile
-from pathlib import Path
 
 from flask import *
-from werkzeug.utils import secure_filename
 
 from predict import Predictor
 
@@ -18,10 +14,6 @@ app.config['MAX_CONTENT_LENGTH'] = 8 * 1024 * 1024 # 8 MB
 def allowed_file(filename):
     return '.' in filename and filename.split('.')[-1].lower() in ALLOWED_EXTENSIONS 
 
-@app.route('/')
-def hello():
-    return "Hello, world!"
-
 @app.route('/api/predict/', methods=['POST'])
 def predict():
     predictor = Predictor()
@@ -30,7 +22,7 @@ def predict():
         # Verify file is in POST request
         if 'file' not in request.files:
             response = jsonify({'message': 'Request contains no \'file\' part.'})
-            response.status_code = 400
+            # response.status_code = 400
             return response
 
         image = request.files['file']
@@ -50,3 +42,6 @@ def predict():
 
             # Return result as JSON response
             return jsonify(result)
+
+if __name__ == "__main__":
+    app.run()
