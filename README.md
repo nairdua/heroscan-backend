@@ -19,8 +19,3 @@ and responses.
 4. Make prediction requests
   * It's recommended to use [Postman](https://www.postman.com) to mock API requests
   * The request's body must contain a `file` variable which is the image to be scanned.
-
-## Contributors
-
-* Muhammad Audrian Ananda Priambodo (C0101048) -- *nairdua*, Cloud Computing
-* 
