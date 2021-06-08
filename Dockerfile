@@ -15,4 +15,4 @@ COPY --from=builder /opt/venv /opt/venv
 
 ENV PATH="/opt/venv/bin:$PATH"
 EXPOSE 8000
-CMD ["gunicorn", "main:app", "-w 2", "--worker-class=gthread", "-b 0.0.0.0:8000"]
+CMD ["gunicorn", "main:app", "-w 4", "--worker-class=gthread", "-b 0.0.0.0:8000"]
