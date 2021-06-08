@@ -1,6 +1,7 @@
 import tempfile
 
 from flask import *
+from flask_cors import CORS
 
 from predict import Predictor
 
@@ -8,6 +9,7 @@ UPLOAD_FOLDER = '/tmp'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png'])
 
 app = Flask(__name__)
+CORS(app) # allow CORS
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 8 * 1024 * 1024 # 8 MB
 
